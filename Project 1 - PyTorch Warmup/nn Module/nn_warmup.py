@@ -34,3 +34,22 @@ for _ in range(num_iterations):
     with torch.no_grad(): 
         for param in model.parameters(): 
             param -= learning_rate * param.grad
+
+
+#Using Optim
+#First argument is the tensors it should update
+optimizer = torch.optim.Adam(model.parameters(), lr = learning_rate)
+for _ in range(num_iterations): 
+    y_pred = model(x)
+    loss = loss_function(y_pred, y)
+
+    #Zero out all the gradients for the variables it will update
+    #On calling loss.backward(), gradients are not overwritten, but are accumulated in buffers. 
+    optimizer.zero_grad()
+
+    #Backward Pass: Compute del(loss) wrt del(parameters)
+    loss.backward()
+
+    #Calling step function updates the parameters. I imagine tensors as nodes in the computational graph
+    #We update the node.val wherener we do stuff. It's inplace?
+    optimizer.step()
